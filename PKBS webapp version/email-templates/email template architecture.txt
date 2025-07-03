@@ -1,0 +1,12 @@
+/pkbs-web
+  /email-templates
+    /layouts
+      - main.hbs       # Base template
+    /partials
+      - header.hbs     # Email header
+      - footer.hbs     # Email footer
+    /views
+      - transaction.hbs  # Transaction receipt template
+      - payment.hbs      # Payment confirmation template
+      - daily-report.hbs # Daily report template
+      - registration.hbs # Staff registration template

@@ -1,0 +1,86 @@
+/pkbs-web
+  /backend
+    /config
+      - db.js
+      - auth.js
+    /controllers
+      - authController.js
+      - sourcingController.js
+      - logisticsController.js
+      - factoryController.js
+      - salesController.js
+    /models
+      - User.js
+      - Token.js
+      - Sourcing.js
+      - Logistics.js
+      - Factory.js
+      - Sales.js
+    /routes
+      - authRoutes.js
+      - sourcingRoutes.js
+      - logisticsRoutes.js
+      - factoryRoutes.js
+      - salesRoutes.js
+    /services
+      - emailService.js
+    - package.json
+    - server.js
+    - .env
+    - Dockerfile
+
+  /frontend
+    /public
+      - index.html
+      - favicon.ico
+      /assets
+        - logo.png
+        - styles.css
+    /src
+      /components
+        /auth
+          - LoginForm.js
+          - RegisterForm.js
+        /sourcing
+          - SourcingForm.js
+          - PhotoUpload.js
+          - LocationPicker.js
+        /logistics
+          - LogisticsForm.js
+        /factory
+          - ProductionForm.js
+        /sales
+          - SalesForm.js
+        /common
+          - FingerprintScanner.js
+          - MapComponent.js
+          - ReceiptGenerator.js
+      /pages
+        - Dashboard.js
+        - Sourcing.js
+        - Logistics.js
+        - Factory.js
+        - Sales.js
+        - Admin.js
+      /store
+        - actions.js
+        - reducers.js
+        - store.js
+      /services
+        - api.js
+        - auth.js
+        - geolocation.js
+      /styles
+        - main.css
+        - components.css
+      - App.js
+      - index.js
+    - package.json
+    - Dockerfile
+
+  /nginx
+    - nginx.conf
+    - Dockerfile
+
+  - docker-compose.yml
+  - README.md

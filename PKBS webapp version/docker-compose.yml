@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - pkbs-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://backend:5000/api  # Use service name for internal networking
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - pkbs-network
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+    networks:
+      - pkbs-network
+
+  mongodb:
+    image: mongo:5.0
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+    networks:
+      - pkbs-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  pkbs-network:
+    driver: bridge

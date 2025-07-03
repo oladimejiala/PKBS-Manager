@@ -1,0 +1,18 @@
+// Add Handlebars helpers
+const hbsHelpers = {
+formatNumber: (num) => new Intl.NumberFormat().format(num),
+year: () => new Date().getFullYear()
+};
+
+// Update your transporter configuration to include helpers
+transporter.use('compile', hbs({
+viewEngine: {
+extname: '.hbs',
+layoutsDir: path.join(__dirname, '../email-templates/layouts'),
+partialsDir: path.join(__dirname, '../email-templates/partials'),
+defaultLayout: 'main',
+helpers: hbsHelpers
+},
+viewPath: path.join(__dirname, '../email-templates/views'),
+extName: '.hbs'
+}));

@@ -1,0 +1,72 @@
+/* component.css */
+
+/* Buttons */
+.button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 0.5em 1.2em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+/* Form elements */
+.input, .select, .textarea {
+  width: 100%;
+  padding: 0.6em;
+  margin: 0.4em 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.input:focus, .select:focus, .textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Labels */
+.label {
+  font-weight: 600;
+  margin-bottom: 0.3em;
+  display: block;
+  color: #333;
+}
+
+/* Cards & Containers */
+.card {
+  background: white;
+  border-radius: 6px;
+  padding: 1.5em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 1.5em;
+}
+
+/* Flex Helpers */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Utility margin/padding */
+.mt-1 { margin-top: 0.5em; }
+.mt-2 { margin-top: 1em; }
+.mb-1 { margin-bottom: 0.5em; }
+.mb-2 { margin-bottom: 1em; }
+.p-1 { padding: 0.5em; }
+.p-2 { padding: 1em; }

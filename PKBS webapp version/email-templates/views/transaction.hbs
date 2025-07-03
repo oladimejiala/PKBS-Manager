@@ -1,0 +1,24 @@
+<h2>New {{type}} Transaction</h2>
+<p>Processed on {{date}}</p>
+
+<div class="transaction-details">
+    {{#if transaction.staffId}}
+    <p><strong>Staff:</strong> {{transaction.staffId.name}}</p>
+    {{/if}}
+
+    {{#if transaction.supplierName}}
+    <p><strong>Supplier:</strong> {{transaction.supplierName}}</p>
+    {{/if}}
+
+    <p><strong>Quantity:</strong> {{transaction.quantity}} {{transaction.unit}}</p>
+    <p><strong>Amount:</strong> ₦{{formatNumber transaction.price}}</p>
+
+    {{#if transaction.location}}
+    <p><strong>Location:</strong>
+        <a
+            href="https://maps.google.com/?q={{transaction.location.coordinates.[1]}},{{transaction.location.coordinates.[0]}}">
+            View on Map
+        </a>
+    </p>
+    {{/if}}
+</div>
