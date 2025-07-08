@@ -1,27 +1,25 @@
+version: '3.8'
+
 services:
   backend:
     build: ./backend
     ports:
       - "5000:5000"
-    env_file:
-      - ./backend/.env
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://mongodb:27017/pkbs
     depends_on:
       - mongodb
-    restart: unless-stopped
-    networks:
-      - pkbs-network
+    healthcheck:
+      test: ["CMD-SHELL", "node healthcheck.js || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   frontend:
     build: ./frontend
-    ports:
-      - "3000:3000"
-    environment:
-      - REACT_APP_API_URL=http://backend:5000/api # Use service name for internal networking
     depends_on:
       - backend
-    restart: unless-stopped
-    networks:
-      - pkbs-network
 
   nginx:
     build: ./nginx
@@ -30,21 +28,15 @@ services:
     depends_on:
       - backend
       - frontend
-    restart: unless-stopped
-    networks:
-      - pkbs-network
 
   mongodb:
     image: mongo:5.0
+    ports:
+      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
-    restart: unless-stopped
-    networks:
-      - pkbs-network
+    environment:
+      - MONGO_INITDB_DATABASE=pkbs
 
 volumes:
   mongodb_data:
-
-networks:
-  pkbs-network:
-    driver: bridge
