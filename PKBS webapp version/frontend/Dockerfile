@@ -18,22 +18,40 @@ COPY . .
 # Verify critical files exist
 # Verification step
 # File verification - add this before the build step
-RUN echo "Verifying required files..." && \
-    REQUIRED_FILES="\
+# Combined verification step
+RUN echo "=== Verifying ALL required files ===" && \
+    # 1. Verify application files
+    echo "Checking application files..." && \
+    APP_FILES="\
       src/pages/Login.js \
-      src/store/slices/authSlice.js \
-      src/store/slices/transactionSlice.js \
       src/services/auth.jsx \
       src/components/common/FingerprintScanner.jsx" && \
-    for file in $REQUIRED_FILES; do \
+    for file in $APP_FILES; do \
       if [ ! -f "$file" ]; then \
-        echo "Error: Missing required file - $file"; \
+        echo "ERROR: Missing critical application file - $file"; \
         echo "Existing files in directory:"; \
         find "$(dirname "$file")" -type f | sed 's/^/  /'; \
         exit 1; \
       fi; \
     done && \
-    echo "All required files verified successfully!"
+    # 2. Verify Redux slices
+    echo "Checking Redux store slices..." && \
+    STORE_SLICES="\
+      authSlice.js \
+      transactionSlice.js \
+      salesSlice.js \
+      logisticsSlice.js \
+      factorySlice.js \
+      sourcingSlice.js" && \
+    for slice in $STORE_SLICES; do \
+      if [ ! -f "src/store/slices/$slice" ]; then \
+        echo "ERROR: Missing required Redux slice - $slice"; \
+        echo "Existing slices:"; \
+        ls -la src/store/slices/; \
+        exit 1; \
+      fi; \
+    done && \
+    echo "=== ALL files verified successfully! ==="
 # Build React app
 # Modify your build step to:
 RUN npm run build || (echo "Build failed - checking warnings..." && exit 1)
