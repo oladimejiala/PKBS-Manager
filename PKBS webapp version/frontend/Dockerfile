@@ -64,6 +64,13 @@ RUN echo "=== Verifying ALL required files and imports ===" && \
       exit 1; \
     fi && \
     \
+    # 4. Specific check for FingerprintScanner component
+    if [ ! -f "src/components/common/FingerprintScanner.jsx" ]; then \
+      echo "ERROR: FingerprintScanner component missing!"; \
+      echo "Expected location: src/components/common/FingerprintScanner.jsx"; \
+      exit 1; \
+    fi && \
+    \
     echo "=== ALL files and imports verified successfully! ==="
 
 # Build React app
