@@ -1,28 +1,28 @@
 # Stage 1: Build React app
 FROM node:18-alpine AS builder
 
-# Install essential build tools
+# 1. Install essential build tools
 RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
-# 1. First copy ONLY package files
+# 2. Copy ONLY package files first
 COPY package.json package-lock.json ./
 
-# 2. Install ALL dependencies (force devDependencies)
-RUN npm install --production=false --legacy-peer-deps --force
+# 3. Install react-scripts FIRST as explicit dependency
+RUN npm install react-scripts@5.0.1 --save-exact --legacy-peer-deps
 
-# 3. Verify react-scripts installation
-RUN npm list react-scripts && \
-    ls -la node_modules/react-scripts
+# 4. Install all other dependencies
+RUN npm install --production=false --legacy-peer-deps
 
-# 4. Copy remaining source files
+# 5. Verify react-scripts is properly installed
+RUN ls -la node_modules/.bin/react-scripts && \
+    npm list react-scripts
+
+# 6. Copy remaining source files
 COPY . .
 
-# 5. Verify authSlice exists
-RUN test -f src/store/slices/authSlice.js || (echo "Error: authSlice.js missing!" && exit 1)
-
-# 6. Build React app
+# 7. Build React app
 RUN npm run build
 
 # Stage 2: Production with Nginx
