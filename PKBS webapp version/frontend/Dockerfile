@@ -16,14 +16,18 @@ RUN npm install --production=false --legacy-peer-deps --force
 COPY . .
 
 # Verify critical files exist
+# Verification step
 RUN ls -la node_modules/react-scripts/package.json && \
-    test -f src/pages/Login.js && \
-    test -f src/store/slices/authSlice.js && \
-    test -f src/services/auth.jsx && \
-    test -f src/components/common/FingerprintScanner.jsx || \
-    (echo "All required files verified successfully!" || \
-    (echo "Missing required files!" && find src -type f && exit 1)
-
+    if [ ! -f src/pages/Login.js ] || \
+       [ ! -f src/store/slices/authSlice.js ] || \
+       [ ! -f src/services/auth.jsx ] || \
+       [ ! -f src/components/common/FingerprintScanner.jsx ]; then \
+        echo "Missing required files!"; \
+        find src -type f; \
+        exit 1; \
+    else \
+        echo "All required files verified successfully!"; \
+    fi
 # Build React app
 RUN npm run build
 
