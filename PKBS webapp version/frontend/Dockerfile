@@ -15,10 +15,6 @@ RUN npm install --production=false --legacy-peer-deps --force
 # Copy all source files
 COPY . .
 
-# Verify critical files exist
-# Verification step
-# File verification - add this before the build step
-# Combined verification step
 # Combined verification step
 RUN echo "=== Verifying ALL required files and imports ===" && \
     \
@@ -55,19 +51,22 @@ RUN echo "=== Verifying ALL required files and imports ===" && \
       fi; \
     done && \
     \
-    # 3. Verify import paths
+    # 3. Verify import paths (improved version)
     echo "Checking import paths..." && \
-    if grep -r "from '../../" src/; then \
-      echo "ERROR: Found invalid imports pointing outside src/ directory"; \
-      echo "Problematic imports:"; \
-      grep -r "from '../../" src/ | sed 's/^/  /'; \
+    if grep -r "from '\\.\\./\\.\\./" src/; then \
+      echo "ERROR: Invalid imports found (fix paths to stay within src/):"; \
+      grep -r "from '\\.\\./\\.\\./" src/ | while read -r line; do \
+        file=$(echo "$line" | cut -d: -f1); \
+        import=$(echo "$line" | cut -d: -f2-); \
+        echo "  $file: $import"; \
+      done; \
+      echo "Tip: Change '../../services/' to '../services/'"; \
       exit 1; \
     fi && \
     \
     echo "=== ALL files and imports verified successfully! ==="
 
 # Build React app
-# Modify your build step to:
 RUN npm run build || (echo "Build failed - checking warnings..." && exit 1)
 
 # Stage 2: Production with Nginx

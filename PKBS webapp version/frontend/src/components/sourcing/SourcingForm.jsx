@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { submitSourcing } from '../../services/api'; // adjust path as needed
+import { submitSourcing } from '../services/api'; // adjust path as needed
 import PhotoUpload from './PhotoUpload';
 import LocationPicker from './LocationPicker';
 import FingerprintScanner from '../common/FingerprintScanner';

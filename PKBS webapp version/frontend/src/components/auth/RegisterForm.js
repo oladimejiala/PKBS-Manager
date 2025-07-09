@@ -1,8 +1,8 @@
 // /components/auth/RegisterForm.js
 import React, { useState, useEffect } from 'react';
-import { getLocation } from '../../services/geolocation';
+import { getLocation } from '../services/geolocation';
 import FingerprintScanner from '../common/FingerprintScanner';
-import api from '../../services/api';
+import api from '../services/api';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({ name: '', phone: '', token: '' });
