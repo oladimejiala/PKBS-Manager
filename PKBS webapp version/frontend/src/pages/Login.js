@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../services/auth';
-import FingerprintScanner from '../common/FingerprintScanner';
+import FingerprintScanner from '../components/common/FingerprintScanner';
 
 const LoginForm = () => {
   const [phone, setPhone] = useState('');
