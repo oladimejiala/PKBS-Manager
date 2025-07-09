@@ -35,7 +35,8 @@ RUN echo "Verifying required files..." && \
     done && \
     echo "All required files verified successfully!"
 # Build React app
-RUN npm run build
+# Modify your build step to:
+RUN npm run build || (echo "Build failed - checking warnings..." && exit 1)
 
 # Stage 2: Production with Nginx
 FROM nginx:alpine
