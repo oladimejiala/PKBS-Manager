@@ -1,41 +1,33 @@
 # Stage 1: Build React app
 FROM node:18-alpine AS builder
 
-# Install build tools (required for some dependencies)
+# Install essential build tools
 RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
-# 1. Copy package files first for caching
+# 1. First copy ONLY package files
 COPY package.json package-lock.json ./
 
-# 2. Install ALL dependencies including devDependencies
-RUN npm ci --production=false --legacy-peer-deps
+# 2. Install ALL dependencies (force devDependencies)
+RUN npm install --production=false --legacy-peer-deps --force
 
-# 3. Verify critical files exist
-RUN ls -la node_modules/.bin/react-scripts && \
-    ls -la src/store/slices/authSlice.* || (echo "Error: Missing authSlice!" && exit 1)
+# 3. Verify react-scripts installation
+RUN npm list react-scripts && \
+    ls -la node_modules/react-scripts
 
-# 4. Copy remaining files
+# 4. Copy remaining source files
 COPY . .
 
-# 5. Build React app
+# 5. Verify authSlice exists
+RUN test -f src/store/slices/authSlice.js || (echo "Error: authSlice.js missing!" && exit 1)
+
+# 6. Build React app
 RUN npm run build
 
 # Stage 2: Production with Nginx
 FROM nginx:alpine
-
-# Remove default nginx config
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copy built assets
 COPY --from=builder /app/build /usr/share/nginx/html
-
-# Copy nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Set proper permissions
-RUN chown -R nginx:nginx /usr/share/nginx/html
-
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
