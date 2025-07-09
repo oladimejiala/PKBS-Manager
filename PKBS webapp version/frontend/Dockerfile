@@ -17,17 +17,23 @@ COPY . .
 
 # Verify critical files exist
 # Verification step
-RUN ls -la node_modules/react-scripts/package.json && \
-    if [ ! -f src/pages/Login.js ] || \
-       [ ! -f src/store/slices/authSlice.js ] || \
-       [ ! -f src/services/auth.jsx ] || \
-       [ ! -f src/components/common/FingerprintScanner.jsx ]; then \
-        echo "Missing required files!"; \
-        find src -type f; \
+# File verification - add this before the build step
+RUN echo "Verifying required files..." && \
+    REQUIRED_FILES="\
+      src/pages/Login.js \
+      src/store/slices/authSlice.js \
+      src/store/slices/transactionSlice.js \
+      src/services/auth.jsx \
+      src/components/common/FingerprintScanner.jsx" && \
+    for file in $REQUIRED_FILES; do \
+      if [ ! -f "$file" ]; then \
+        echo "Error: Missing required file - $file"; \
+        echo "Existing files in directory:"; \
+        find "$(dirname "$file")" -type f | sed 's/^/  /'; \
         exit 1; \
-    else \
-        echo "All required files verified successfully!"; \
-    fi
+      fi; \
+    done && \
+    echo "All required files verified successfully!"
 # Build React app
 RUN npm run build
 
