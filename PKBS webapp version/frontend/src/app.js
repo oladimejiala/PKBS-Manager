@@ -10,7 +10,7 @@ import Logistics from './pages/Logistics';
 import Sales from './pages/Sales';
 import Sourcing from './pages/Sourcing';
 import Login from './pages/Login';
-import NotFound from './pages/NotFound';
+// import NotFound from './pages/NotFound';
 
 const App = () => {
   const user = useSelector(state => state.auth.user);
