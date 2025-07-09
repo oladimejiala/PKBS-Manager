@@ -4,13 +4,20 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 COPY . .
 
-# Create verification script using heredoc syntax
-RUN cat <<'EOF' > /verify.sh
+# Create and run verification in a single RUN command
+RUN set -e && \
+    cat <<'EOF' > /verify.sh && \
+    chmod +x /verify.sh && \
+    /verify.sh && \
+    echo "=== BUILD STAGE ===" && \
+    npm install && \
+    npm run build && \
+    echo "=== BUILD SUCCESSFUL ==="
 #!/bin/sh
 echo "=== VERIFICATION STAGE ==="
 
 echo "1/6 Checking critical files..."
-critical_files="src/pages/Login.js src/services/auth.jsx src/components/common/FingerprintScanner.jsx"
+critical_files="src/pages/Login.js src/services/auth.js src/components/common/FingerprintScanner.jsx"
 for file in $critical_files; do
   if [ ! -f "$file" ]; then
     echo "ERROR: Missing $file"
@@ -41,8 +48,8 @@ echo "4/6 Checking authService imports..."
 if auth_imports=$(grep -r "from ['\"]\\.\\./services/authService" src/); then
   echo "ERROR: Found deprecated authService imports:"
   echo "$auth_imports"
-  echo "Update all authService imports to: from '../services/auth'"
-  echo "Run this fix command: find src/ -type f -exec sed -i \"s|from ['\"]\\.\\./services/authService['\"]|from '\"../services/auth\"'|g\" {} +"
+  echo "Update to: from '../services/auth'"
+  echo "Run: find src/ -type f -exec sed -i \"s|from ['\"]\\.\\./services/authService['\"]|from '../services/auth'|g\" {} +"
   exit 1
 fi
 
@@ -50,8 +57,8 @@ echo "5/6 Verifying service imports..."
 if service_imports=$(grep -r "from ['\"]\\.\\./\\.\\./services" src/); then
   echo "ERROR: Invalid service imports found:"
   echo "$service_imports"
-  echo "Update all service imports to use correct relative paths"
-  echo "Run this fix command: find src/ -type f -exec sed -i \"s|from ['\"]\\.\\./\\.\\./services|from '\"../services\"'|g\" {} +"
+  echo "Update to: from '../services'"
+  echo "Run: find src/ -type f -exec sed -i \"s|from ['\"]\\.\\./\\.\\./services['\"]|from '../services'|g\" {} +"
   exit 1
 fi
 
@@ -64,13 +71,6 @@ fi
 
 echo "=== VERIFICATION PASSED ==="
 EOF
-
-RUN chmod +x /verify.sh && \
-    /verify.sh && \
-    echo "=== BUILD STAGE ===" && \
-    npm install && \
-    npm run build && \
-    echo "=== BUILD SUCCESSFUL ==="
 
 # Final stage
 FROM nginx:alpine
