@@ -1,7 +1,25 @@
-# Combined verification step
-RUN echo "=== Verifying ALL required files and imports ===" && \
+# Stage 1: Build React app
+FROM node:18-alpine AS builder
+
+# Install build essentials
+RUN apk add --no-cache python3 make g++
+
+WORKDIR /app
+
+# Copy package files first
+COPY package.json package-lock.json ./
+
+# Install all dependencies
+RUN npm install --production=false --legacy-peer-deps
+
+# Copy all source files
+COPY . .
+
+# Combined verification and build step
+RUN echo "=== Starting build process ===" && \
     \
-    # 1. Verify application files
+    # 1. File structure verification
+    echo "=== Verifying ALL required files and imports ===" && \
     echo "Checking application files..." && \
     APP_FILES="\
       src/pages/Login.js \
@@ -34,7 +52,7 @@ RUN echo "=== Verifying ALL required files and imports ===" && \
       fi; \
     done && \
     \
-    # 3. Verify import paths (comprehensive check)
+    # 3. Verify import paths
     echo "Checking import paths..." && \
     if grep -r "from '\\.\\./\\.\\./" src/; then \
       echo "ERROR: Invalid deep imports found (fix paths to stay within src/):"; \
@@ -59,7 +77,7 @@ RUN echo "=== Verifying ALL required files and imports ===" && \
       exit 1; \
     fi && \
     \
-    # 5. Verify FingerprintScanner component exists
+    # 5. Verify FingerprintScanner component
     echo "Verifying FingerprintScanner component..." && \
     if [ ! -f "src/components/common/FingerprintScanner.jsx" ]; then \
       echo "ERROR: FingerprintScanner component missing!"; \
@@ -69,4 +87,16 @@ RUN echo "=== Verifying ALL required files and imports ===" && \
       exit 1; \
     fi && \
     \
-    echo "=== ALL files and imports verified successfully! ==="
+    echo "=== ALL files and imports verified successfully! ===" && \
+    \
+    # Build React app
+    echo "=== Building application ===" && \
+    npm run build || (echo "Build failed!"; exit 1) && \
+    echo "=== Build completed successfully ==="
+
+# Stage 2: Production with Nginx
+FROM nginx:alpine
+COPY --from=builder /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
