@@ -7,7 +7,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { loginUser } from '../../services/auth';
+import { loginUser } from '../services/auth';
 import FingerprintScanner from '../common/FingerprintScanner';
 
 const LoginForm = () => {

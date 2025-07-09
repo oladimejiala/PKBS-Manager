@@ -19,7 +19,9 @@ COPY . .
 # Verification step
 # File verification - add this before the build step
 # Combined verification step
-RUN echo "=== Verifying ALL required files ===" && \
+# Combined verification step
+RUN echo "=== Verifying ALL required files and imports ===" && \
+    \
     # 1. Verify application files
     echo "Checking application files..." && \
     APP_FILES="\
@@ -34,6 +36,7 @@ RUN echo "=== Verifying ALL required files ===" && \
         exit 1; \
       fi; \
     done && \
+    \
     # 2. Verify Redux slices
     echo "Checking Redux store slices..." && \
     STORE_SLICES="\
@@ -51,7 +54,18 @@ RUN echo "=== Verifying ALL required files ===" && \
         exit 1; \
       fi; \
     done && \
-    echo "=== ALL files verified successfully! ==="
+    \
+    # 3. Verify import paths
+    echo "Checking import paths..." && \
+    if grep -r "from '../../" src/; then \
+      echo "ERROR: Found invalid imports pointing outside src/ directory"; \
+      echo "Problematic imports:"; \
+      grep -r "from '../../" src/ | sed 's/^/  /'; \
+      exit 1; \
+    fi && \
+    \
+    echo "=== ALL files and imports verified successfully! ==="
+
 # Build React app
 # Modify your build step to:
 RUN npm run build || (echo "Build failed - checking warnings..." && exit 1)
