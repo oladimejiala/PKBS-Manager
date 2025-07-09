@@ -1,25 +1,29 @@
 # Stage 1: Build React app
 FROM node:18-alpine AS builder
 
-# Install essential build tools
+# Install build essentials
 RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
-# 1. Copy package files first
+# Copy package files first
 COPY package.json package-lock.json ./
 
-# 2. Install dependencies (include devDependencies)
-RUN npm install --production=false --legacy-peer-deps
+# Install all dependencies
+RUN npm install --production=false --legacy-peer-deps --force
 
-# 3. Verify critical files exist
-RUN ls -la node_modules/.bin/react-scripts && \
-    test -f src/pages/Login.js || (echo "Error: Login.js missing!" && exit 1)
-
-# 4. Copy all source files
+# Copy all source files
 COPY . .
 
-# 5. Build React app
+# Verify critical files exist
+RUN ls -la node_modules/react-scripts/package.json && \
+    test -f src/pages/Login.js && \
+    test -f src/store/slices/authSlice.js && \
+    test -f src/services/auth.js && \
+    test -f src/common/FingerprintScanner.js || \
+    (echo "Missing required files!" && find src -type f && exit 1)
+
+# Build React app
 RUN npm run build
 
 # Stage 2: Production with Nginx
