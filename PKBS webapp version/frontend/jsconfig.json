@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src"
+  }
+}
+// This file is used to configure the JavaScript project settings for the frontend of the PKBS web application.
+// It specifies the base URL for module resolution, allowing for cleaner import statements throughout the project.
+// The "baseUrl" is set to "src", which means that all module imports will be resolved relative to the "src" directory.
+// This setup helps in organizing the codebase and avoiding long relative paths in import statements.
+// For example, instead of importing a module with a long relative path like `../../../components/MyComponent`, you can simply use `components/MyComponent`.
+// This configuration is particularly useful in larger projects where maintaining clean and readable import paths is essential for code maintainability and clarity

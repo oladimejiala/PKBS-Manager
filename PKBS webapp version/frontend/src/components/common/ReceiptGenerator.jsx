@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { format } from 'date-fns';
-import logo from '../assets/pkbs-logo.png';
-import './ReceiptGenerator.css';
+import logo from 'assets/pkbs-logo.png';
+import 'ReceiptGenerator.css';
 
 const ReceiptGenerator = ({ transaction, type }) => {
   const [receiptData, setReceiptData] = useState(null);
