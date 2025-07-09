@@ -43,7 +43,17 @@ if auth_imports=$(grep -r "from \\.\\./services/authService" src/); then\n\
   exit 1\n\
 fi\n\
 \n\
-echo "5/5 Verifying FingerprintScanner..."\n\
+echo "5/5 Verifying service imports..."\n\
+if grep -r "from \'\\.\\./\\.\\./services" src/; then\n\
+  echo "ERROR: Invalid service imports found!"\n\
+  grep -r "from \'\\.\\./\\.\\./services" src/ | while read -r line; do\n\
+    echo "  $line"\n\
+  done\n\
+  echo "Run this fix command: find src/ -type f -exec sed -i \"s|from \'../../services|from \'../services|g\" {} +"\n\
+  exit 1\n\
+fi\n\
+\n\
+echo "6/5 Verifying FingerprintScanner..."\n\
 if [ ! -f "src/components/common/FingerprintScanner.jsx" ]; then\n\
   echo "ERROR: FingerprintScanner.jsx missing"\n\
   ls -la src/components/common/\n\
