@@ -19,8 +19,9 @@ COPY . .
 RUN ls -la node_modules/react-scripts/package.json && \
     test -f src/pages/Login.js && \
     test -f src/store/slices/authSlice.js && \
-    test -f src/services/auth.js && \
-    test -f src/common/FingerprintScanner.js || \
+    test -f src/services/auth.jsx && \
+    test -f src/components/common/FingerprintScanner.jsx || \
+    (echo "All required files verified successfully!" || \
     (echo "Missing required files!" && find src -type f && exit 1)
 
 # Build React app
