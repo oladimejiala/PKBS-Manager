@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { verifyFingerprint } from 'services/auth';
-import './styles/FingerprintScanner.css'; // FIXED path
+import 'styles/FingerprintScanner.css'; // FIXED path
+
 const FingerprintScanner = ({ title, onCapture, onBack, required = true }) => {
   const [scanning, setScanning] = useState(false);
   const [error, setError] = useState(null);

@@ -1,3 +1,6 @@
+import React, { useState } from 'react';
+import ReceiptGenerator from 'components/common/ReceiptGenerator'; // Adjust path as needed
+
 const columns = [
   {
     name: 'Date',
@@ -35,19 +38,32 @@ const columns = [
   },
 ];
 
-{newToken && (
-  <div
-    className="token-display"
-    style={{
-      fontFamily: 'monospace',
-      backgroundColor: '#f4f4f4',
-      padding: '10px',
-      borderRadius: '4px',
-      whiteSpace: 'pre-wrap'
-    }}
-  >
-    <h3>New Registration Token:</h3>
-    <pre>{newToken}</pre>
-    <p>Share this with new staff for registration</p>
-  </div>
-)}
+const Admin = () => {
+  const [newToken, setNewToken] = useState(null); // Placeholder for actual logic
+
+  return (
+    <div>
+      {/* Your table would go here, using `columns` */}
+      {/* e.g., <DataTable columns={columns} data={data} /> */}
+
+      {newToken && (
+        <div
+          className="token-display"
+          style={{
+            fontFamily: 'monospace',
+            backgroundColor: '#f4f4f4',
+            padding: '10px',
+            borderRadius: '4px',
+            whiteSpace: 'pre-wrap',
+          }}
+        >
+          <h3>New Registration Token:</h3>
+          <pre>{newToken}</pre>
+          <p>Share this with new staff for registration</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Admin;
