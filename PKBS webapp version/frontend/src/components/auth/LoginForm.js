@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { loginUser } from '../services/auth';
 import FingerprintScanner from '../common/FingerprintScanner';
 
@@ -10,15 +9,14 @@ const LoginForm = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
+
     try {
-      await dispatch(loginUser({ phone, fingerprintData }));
+      await loginUser({ phone, fingerprintData }); // 🔥 Direct call to login
       navigate('/dashboard');
     } catch (err) {
       setError('Invalid credentials. Please try again.');
@@ -41,7 +39,7 @@ const LoginForm = () => {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label>Fingerprint Verification</label>
           <FingerprintScanner 
@@ -49,7 +47,7 @@ const LoginForm = () => {
             required
           />
         </div>
-        
+
         <button type="submit" disabled={isLoading || !fingerprintData}>
           {isLoading ? 'Logging in...' : 'Login'}
         </button>
